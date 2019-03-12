@@ -9,7 +9,7 @@ path = '/home/forward/Desktop/'          # Working path
 def open_txt():
     txt_name = input('\n> Filename of text> ')
     try:
-        t = open(f'{path}{txt_name}', 'r')
+        t = open(f'{txt_name}', 'r')
         txt = t.read()
         t.close()
         return txt
@@ -22,7 +22,7 @@ def open_txt():
 def open_contacts():
     contacts_name = input('\n> Filename of contacts> ')
     try:
-        c = open(f'{path}{contacts_name}', 'r')
+        c = open(f'{contacts_name}', 'r')
         contacts = [x.replace('\n', '') for x in c]
         c.close()
         return contacts
@@ -45,51 +45,33 @@ def menu():
         return
 
     #2-- contact input type
-    print('\n\t Choose Contacts input type')
-    print('>[!] If you choose "contacts-list", than you have to upload list file')
-    contact_type = input('"S" for single contact / "L" for contacts-list> ')
-    if contact_type.upper() == 'S':
-        string = True
-        contact = input('> Input adress> ')
-    elif contact_type.upper() == 'L':
-        string = False
-        contact = open_contacts()
-    else :
-        print('>[ERROR] Check out instruction')
-        return
-
+    print('\n\t Upload Contacts')
+    string = False
+    contact = open_contacts()
+    
     # Call MIME & SENDER functions here
-    obj_type = mime_object(text_file, contact, string)
-    sender(obj_type)
+    people = mime_object(text_file, contact)
+    sender(people)
 
 
 #_______________________________________________________________________________________________
 # Mime object
-def mime_object(body_text, contacts, string):
-    sender_mail = input('Input "From"> ')
-    sbj = input('Input "subject"> ')
-    if string:
-        ls = []
+def mime_object(body_text, contacts):
+    sender_mail = input('Input "From": ')
+    sbj = input('Input "Subject": ')
+    contacts_list = []
+    for each in contacts:
         msg = MIMEText(body_text)
         msg['From'] = sender_mail
-        msg['To'] = contacts
+        msg['To'] = each
         msg['Subject'] = sbj
-        ls.append(msg)
-        return ls
-    else:
-        contacts_list = []
-        for each in contacts:
-            msg = MIMEText(body_text)
-            msg['From'] = sender_mail
-            msg['To'] = each
-            msg['Subject'] = sbj
-            contacts_list.append(msg)
-        return contacts_list
+        contacts_list.append(msg)
+    return contacts_list
 
 
 #_______________________________________________________________________________________________
 # Sender function
-def sender(mime_obj):
+def sender(people):
     uname = input('Enter username: ')
     pwr = input('Enter password: ')
 
@@ -103,12 +85,12 @@ def sender(mime_obj):
         server.login(uname, pwr)
     except:
         print('[!] Invalid username or password')
-        sender(mime_obj)
+        sender(people)
 
     # Send messages
     scount = 0
     fcount = 0
-    for msg in mime_obj:
+    for msg in people:
         try:
             server.send_message(msg)
             print(str(scount + 1) + ' sent')
@@ -120,16 +102,15 @@ def sender(mime_obj):
 
     server.quit()
 
-    print(str(scount) + 'Message has been sent succesfully')
-    print(str(fcount) + 'Message has been sent sent failed')
+    print(str(scount) + ' Message has been sent succesfully')
+    print(str(fcount) + ' Failed')
 
 # info
 def head_info():
-	print('[*] \t About')
+	print('[*] \t ')
 	print('[*] E-mail sender')
 	print('[*] Using Google SMTP server')
-	print('[*] Files must be only .txt')
-	print('[*] \n ______________ Shell _______________\n')
+	print('[*] \n')
 
 
 ################# MAIN ###################
