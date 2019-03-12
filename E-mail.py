@@ -2,7 +2,6 @@
 import smtplib
 from email.mime.text import MIMEText
 
-path = '/home/forward/Desktop/'          # Working path
 
 #_______________________________________________________________________________________________
 # Read main text file
