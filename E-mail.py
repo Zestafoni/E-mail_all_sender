@@ -43,9 +43,8 @@ def menu():
         print('>[ERROR] Check out instruction')
         return
 
-    #2-- contact input type
+    #2-- contact input
     print('\n\t Upload Contacts')
-    string = False
     contact = open_contacts()
     
     # Call MIME & SENDER functions here
